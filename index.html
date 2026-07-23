@@ -1,31 +1,1312 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a35c7">
+  <meta name="description" content="MillSight supplementary materials: demo, evidence, project scale, build story, and questions to try.">
+  <title>MillSight | Project materials</title>
+  <script>document.documentElement.classList.add('has-js')</script>
+  <style>
+    :root {
+      --blue: #0a35c7;
+      --blue-deep: #06258f;
+      --blue-soft: #eaf0ff;
+      --green: #00b85a;
+      --green-deep: #008f46;
+      --ink: #0c1833;
+      --muted: #5d6980;
+      --paper: #ffffff;
+      --wash: #f4f7fb;
+      --line: #dce4f1;
+      --shadow: 0 18px 46px rgba(12, 38, 100, .12);
+      --radius: 24px;
+      --page: min(1120px, calc(100% - 36px));
+    }
 
-    <title>Alexander Grinman Rivera</title>
-    <meta
-        name="description"
-        content="Computational Engineering student working in robotics, simulation, process control, and industrial automation."
-    >
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 82px; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--wash);
+      font-family: "Segoe UI", Inter, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    img, video { max-width: 100%; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    a { color: inherit; }
+    button { font: inherit; }
+    .skip-link {
+      position: fixed;
+      left: 12px;
+      top: -80px;
+      z-index: 100;
+      padding: 12px 16px;
+      color: #fff;
+      background: var(--blue);
+      border-radius: 10px;
+    }
+    .skip-link:focus { top: 12px; }
 
-    <link rel="stylesheet" href="styles.css">
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid rgba(220, 228, 241, .88);
+      background: rgba(255, 255, 255, .9);
+      backdrop-filter: blur(18px) saturate(1.3);
+    }
+    .header-inner {
+      width: var(--page);
+      min-height: 66px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-weight: 750;
+      letter-spacing: -.02em;
+    }
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #fff;
+      background: var(--blue);
+      box-shadow: 0 8px 18px rgba(10, 53, 199, .22);
+    }
+    .brand-mark svg { width: 19px; height: 19px; }
+    .header-cta {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+      border-radius: 999px;
+      color: #fff;
+      background: var(--blue);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 750;
+    }
+
+    main { overflow: hidden; }
+    .section {
+      width: var(--page);
+      margin: 0 auto;
+      padding: 72px 0;
+    }
+    .section-kicker {
+      margin: 0 0 10px;
+      color: var(--green-deep);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 { text-wrap: balance; }
+    h1 {
+      margin-bottom: 18px;
+      font-size: clamp(54px, 17vw, 96px);
+      line-height: .92;
+      letter-spacing: -.065em;
+    }
+    h2 {
+      margin-bottom: 16px;
+      font-size: clamp(34px, 9vw, 58px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+    h3 {
+      margin-bottom: 8px;
+      font-size: 22px;
+      line-height: 1.16;
+      letter-spacing: -.025em;
+    }
+    .section-intro {
+      max-width: 720px;
+      margin-bottom: 30px;
+      color: var(--muted);
+      font-size: clamp(17px, 4.6vw, 20px);
+    }
+
+    .hero {
+      position: relative;
+      min-height: min(760px, calc(100svh - 66px));
+      display: flex;
+      align-items: center;
+      color: #fff;
+      background:
+        radial-gradient(circle at 88% 12%, rgba(0, 214, 103, .23), transparent 28%),
+        radial-gradient(circle at 8% 88%, rgba(45, 111, 255, .5), transparent 32%),
+        linear-gradient(145deg, #071d75 0%, #0a35c7 58%, #0734a8 100%);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .1;
+      background-image:
+        linear-gradient(rgba(255,255,255,.35) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.35) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, transparent, #000 28%, #000 80%, transparent);
+      pointer-events: none;
+    }
+    .hero-ring {
+      position: absolute;
+      width: min(560px, 108vw);
+      right: -235px;
+      top: -265px;
+      opacity: .55;
+      transform: rotate(9deg);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      width: var(--page);
+      margin: 0 auto;
+      padding: 72px 0 78px;
+    }
+    .internal-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 36px;
+      padding: 8px 12px;
+      border: 1px solid rgba(255,255,255,.3);
+      border-radius: 999px;
+      color: rgba(255,255,255,.9);
+      background: rgba(255,255,255,.09);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .internal-label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(0,184,90,.17);
+    }
+    .hero-copy { max-width: 760px; }
+    .hero-copy .tagline {
+      max-width: 680px;
+      margin-bottom: 28px;
+      color: rgba(255,255,255,.82);
+      font-size: clamp(20px, 5.4vw, 28px);
+      line-height: 1.32;
+    }
+    .hero-copy .tagline strong { color: #fff; }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 34px;
+    }
+    .button {
+      min-height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 20px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .button-primary {
+      color: var(--blue-deep);
+      background: #fff;
+      box-shadow: 0 14px 32px rgba(0,0,0,.16);
+    }
+    .button-secondary {
+      color: #fff;
+      border-color: rgba(255,255,255,.35);
+      background: rgba(255,255,255,.08);
+    }
+    .hero-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+    .hero-chip {
+      padding: 7px 11px;
+      border-radius: 999px;
+      color: rgba(255,255,255,.9);
+      background: rgba(0,0,0,.13);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .demo-wrap {
+      padding-top: 62px;
+    }
+    .demo-shell {
+      overflow: hidden;
+      border: 1px solid rgba(10, 53, 199, .18);
+      border-radius: var(--radius);
+      background: #0e1117;
+      box-shadow: var(--shadow);
+    }
+    .demo-shell video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16 / 9;
+      background: #0e1117;
+    }
+    .demo-caption {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      margin: 14px 4px 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .demo-caption .dot {
+      flex: 0 0 auto;
+      width: 9px;
+      height: 9px;
+      margin-top: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .proof-section { padding-top: 56px; }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin: 28px 0 18px;
+    }
+    .metric {
+      min-height: 128px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--paper);
+      box-shadow: 0 10px 30px rgba(12, 38, 100, .06);
+    }
+    .metric strong {
+      display: block;
+      color: var(--blue);
+      font-size: clamp(34px, 10vw, 50px);
+      line-height: 1;
+      letter-spacing: -.045em;
+    }
+    .metric span {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 650;
+    }
+    .impact-card {
+      position: relative;
+      overflow: hidden;
+      padding: 28px;
+      border-radius: var(--radius);
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue-deep), var(--blue));
+      box-shadow: var(--shadow);
+    }
+    .impact-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -120px;
+      top: -130px;
+      border: 40px solid rgba(0, 214, 103, .24);
+      border-radius: 50%;
+    }
+    .impact-eyebrow {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 12px;
+      color: #8fffc0;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .impact-number {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 4px;
+      font-size: clamp(42px, 12vw, 66px);
+      font-weight: 850;
+      line-height: 1;
+      letter-spacing: -.055em;
+    }
+    .impact-label {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 20px;
+      color: rgba(255,255,255,.84);
+      font-weight: 650;
+    }
+    .impact-formula {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      padding-top: 17px;
+      border-top: 1px solid rgba(255,255,255,.2);
+      color: rgba(255,255,255,.83);
+      font-size: 14px;
+    }
+    .impact-note {
+      position: relative;
+      z-index: 1;
+      margin: 8px 0 0;
+      color: rgba(255,255,255,.63);
+      font-size: 12px;
+    }
+
+    .context-disclosure {
+      margin-top: 18px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--paper);
+    }
+    .context-disclosure summary {
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 18px;
+      color: var(--blue);
+      font-weight: 800;
+      cursor: pointer;
+      list-style: none;
+    }
+    .context-disclosure summary::-webkit-details-marker { display: none; }
+    .context-disclosure summary::after {
+      content: "+";
+      flex: 0 0 auto;
+      font-size: 24px;
+      font-weight: 500;
+      transition: transform .2s ease;
+    }
+    .context-disclosure[open] summary::after { transform: rotate(45deg); }
+    .context-body { padding: 0 18px 18px; }
+    .context-body p { margin-bottom: 16px; color: var(--muted); }
+    .context-body img {
+      width: 100%;
+      display: block;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .capabilities-section {
+      width: 100%;
+      padding: 76px 0;
+      background: #fff;
+      border-block: 1px solid var(--line);
+    }
+    .capabilities-head { width: var(--page); margin: 0 auto; }
+    .evidence-scroller {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: min(92vw, 380px);
+      gap: 14px;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: inline mandatory;
+      scroll-padding-inline: max(18px, calc((100vw - 1120px) / 2));
+      padding: 8px max(18px, calc((100vw - 1120px) / 2)) 22px;
+      scrollbar-width: none;
+    }
+    .evidence-scroller::-webkit-scrollbar { display: none; }
+    .evidence-card {
+      overflow: hidden;
+      scroll-snap-align: start;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--paper);
+      box-shadow: 0 12px 34px rgba(12, 38, 100, .08);
+    }
+    .evidence-media {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #11151c;
+    }
+    .evidence-media img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      object-position: center top;
+      transition: transform .35s ease;
+    }
+    .evidence-card:focus-within .evidence-media img,
+    .evidence-card:hover .evidence-media img { transform: scale(1.025); }
+    .evidence-number {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 6px 9px;
+      border-radius: 999px;
+      color: #fff;
+      background: #0a35c7;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+    .evidence-callout {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      left: 12px;
+      padding: 11px 13px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 12px;
+      color: #fff;
+      background: rgba(8, 14, 27, .88);
+      box-shadow: 0 8px 22px rgba(0,0,0,.2);
+      backdrop-filter: blur(7px);
+    }
+    .evidence-callout strong {
+      display: block;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+    .evidence-callout span {
+      display: block;
+      margin-top: 3px;
+      color: rgba(255,255,255,.74);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+    .evidence-copy { padding: 18px 20px 20px; }
+    .evidence-copy .evidence-number { margin-bottom: 11px; }
+    .evidence-copy p {
+      min-height: 50px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .view-button {
+      min-height: 44px;
+      width: 100%;
+      border: 1px solid #bed0ff;
+      border-radius: 12px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .swipe-hint {
+      width: var(--page);
+      margin: -7px auto 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .evidence-principle {
+      width: 100%;
+      color: #fff;
+      background: #0d1528;
+    }
+    .principle-inner {
+      width: var(--page);
+      margin: 0 auto;
+      padding: 68px 0;
+    }
+    .principle-inner .section-kicker { color: #79f0ae; }
+    .evidence-stack {
+      display: grid;
+      gap: 1px;
+      margin-top: 28px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 20px;
+      background: rgba(255,255,255,.13);
+    }
+    .evidence-step {
+      padding: 20px;
+      background: #111c34;
+    }
+    .evidence-step strong { display: block; margin-bottom: 4px; font-size: 18px; }
+    .evidence-step span { color: rgba(255,255,255,.66); font-size: 14px; }
+    .boundary-note {
+      margin: 18px 0 0;
+      padding-left: 15px;
+      border-left: 3px solid var(--green);
+      color: rgba(255,255,255,.7);
+      font-size: 14px;
+    }
+
+    .build-layout { display: grid; gap: 28px; }
+    .timeline {
+      display: grid;
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: build;
+    }
+    .timeline li {
+      position: relative;
+      min-height: 98px;
+      padding: 2px 0 26px 60px;
+      counter-increment: build;
+    }
+    .timeline li::before {
+      content: counter(build, decimal-leading-zero);
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      color: #fff;
+      background: var(--blue);
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .timeline li:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 19px;
+      top: 45px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--line);
+    }
+    .timeline strong { display: block; margin-bottom: 3px; font-size: 18px; }
+    .timeline span { color: var(--muted); font-size: 14px; }
+    .vault-card {
+      align-self: start;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #202020;
+      box-shadow: var(--shadow);
+    }
+    .vault-card button {
+      width: 100%;
+      display: block;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: zoom-in;
+    }
+    .vault-card img { width: 100%; display: block; }
+    .vault-caption {
+      padding: 15px 18px;
+      color: rgba(255,255,255,.75);
+      background: #181818;
+      font-size: 13px;
+    }
+
+    .prompts-section {
+      width: 100%;
+      padding: 76px 0;
+      background: #fff;
+      border-block: 1px solid var(--line);
+    }
+    .prompts-inner { width: var(--page); margin: 0 auto; }
+    .role-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin: 24px -18px 16px;
+      padding: 0 18px 8px;
+      scrollbar-width: none;
+    }
+    .role-tabs::-webkit-scrollbar { display: none; }
+    .role-tab {
+      min-height: 42px;
+      flex: 0 0 auto;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: #fff;
+      font-weight: 750;
+      cursor: pointer;
+    }
+    .role-tab[aria-selected="true"] {
+      color: #fff;
+      border-color: var(--blue);
+      background: var(--blue);
+    }
+    .prompt-card {
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--wash);
+    }
+    .prompt-role {
+      margin-bottom: 10px;
+      color: var(--green-deep);
+      font-size: 12px;
+      font-weight: 850;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+    .prompt-text {
+      min-height: 108px;
+      margin-bottom: 20px;
+      font-size: clamp(20px, 5.5vw, 27px);
+      font-weight: 650;
+      line-height: 1.35;
+      letter-spacing: -.02em;
+    }
+    .copy-button {
+      min-height: 46px;
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .materials-grid { display: grid; gap: 12px; }
+    .download-card {
+      min-height: 82px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      text-decoration: none;
+      box-shadow: 0 8px 24px rgba(12, 38, 100, .05);
+    }
+    .download-card strong { display: block; margin-bottom: 3px; }
+    .download-card span { color: var(--muted); font-size: 13px; }
+    .download-arrow {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .internal-notice {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border: 1px solid #c8ead7;
+      border-radius: 16px;
+      color: #24553a;
+      background: #effaf4;
+      font-size: 13px;
+    }
+
+    .about-card {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+    .about-main {
+      padding: 26px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+    }
+    .about-main .role { color: rgba(255,255,255,.72); }
+    .about-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 0;
+      padding: 22px 26px;
+      gap: 20px 14px;
+    }
+    .about-details div { min-width: 0; }
+    .about-details dt {
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .about-details dd { margin: 0; font-weight: 700; }
+
+    footer {
+      padding: 34px 18px calc(34px + env(safe-area-inset-bottom));
+      color: #637087;
+      background: #ecf1f8;
+      text-align: center;
+      font-size: 12px;
+    }
+    .footer-logo { width: 116px; margin-bottom: 12px; }
+
+    dialog {
+      width: min(1120px, calc(100% - 24px));
+      max-height: calc(100svh - 24px);
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      border-radius: 20px;
+      background: #0e1117;
+      box-shadow: 0 28px 90px rgba(0,0,0,.5);
+    }
+    dialog::backdrop {
+      background: rgba(3, 10, 28, .78);
+      backdrop-filter: blur(8px);
+    }
+    .viewer-top {
+      min-height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 12px 10px 18px;
+      color: #fff;
+      background: #121824;
+    }
+    .viewer-top strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .viewer-actions { display: inline-flex; align-items: center; gap: 8px; }
+    .viewer-open {
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: 11px;
+      color: #fff;
+      background: rgba(255,255,255,.1);
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .viewer-close {
+      width: 40px;
+      height: 40px;
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 12px;
+      color: #fff;
+      background: rgba(255,255,255,.1);
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .viewer-body {
+      max-height: calc(100svh - 82px);
+      overflow: auto;
+      padding: 10px;
+      background: #090c12;
+    }
+    .viewer-body img {
+      width: 100%;
+      display: block;
+      border-radius: 12px;
+      background: #fff;
+    }
+    .viewer-caption {
+      margin: 12px 4px 6px;
+      color: rgba(255,255,255,.68);
+      font-size: 13px;
+    }
+
+    .has-js .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .has-js .reveal.visible { opacity: 1; transform: none; }
+
+    @media (min-width: 720px) {
+      :root { --page: min(1120px, calc(100% - 64px)); }
+      .metric-grid { grid-template-columns: repeat(3, 1fr); }
+      .impact-card { padding: 38px; }
+      .evidence-stack { grid-template-columns: repeat(3, 1fr); }
+      .build-layout { grid-template-columns: minmax(0, .92fr) minmax(360px, 1.08fr); align-items: start; }
+      .materials-grid { grid-template-columns: repeat(3, 1fr); }
+      .download-card { grid-template-columns: 1fr; align-content: space-between; min-height: 150px; }
+      .download-arrow { justify-self: end; }
+      .prompt-card { display: grid; grid-template-columns: 1fr 180px; align-items: end; gap: 22px; }
+      .prompt-role, .prompt-text { grid-column: 1; }
+      .prompt-text { min-height: 0; margin-bottom: 0; }
+      .copy-button { grid-column: 2; grid-row: 1 / span 2; }
+    }
+
+    @media (min-width: 1040px) {
+      .hero-inner { padding-block: 104px; }
+      .section { padding-block: 96px; }
+      .capabilities-section, .prompts-section { padding-block: 96px; }
+      .evidence-scroller { grid-auto-columns: 380px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+      .has-js .reveal { opacity: 1; transform: none; }
+    }
+
+    .static-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(0, 202, 105, .22), transparent 34%),
+        radial-gradient(circle at 88% 82%, rgba(14, 63, 203, .24), transparent 38%),
+        #071527;
+    }
+    .site-unlocked .static-gate { display: none; }
+    body.gate-locked { overflow: hidden; }
+    .gate-card {
+      width: min(100%, 430px);
+      padding: 32px 26px 26px;
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 26px;
+      background: rgba(255, 255, 255, .97);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .35);
+      color: #09204a;
+      text-align: center;
+    }
+    .gate-logo {
+      width: min(210px, 62%);
+      height: auto;
+      margin: 0 auto 24px;
+    }
+    .gate-card h1 {
+      margin: 0;
+      font-size: clamp(30px, 9vw, 44px);
+      letter-spacing: -.04em;
+    }
+    .gate-card p {
+      margin: 10px auto 22px;
+      max-width: 31ch;
+      color: #4d5f78;
+      line-height: 1.5;
+    }
+    .gate-form {
+      display: grid;
+      gap: 12px;
+      text-align: left;
+    }
+    .gate-form label {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .gate-form input {
+      width: 100%;
+      min-height: 52px;
+      padding: 0 16px;
+      border: 1px solid #bcc8d8;
+      border-radius: 13px;
+      background: #fff;
+      color: #09204a;
+      font: inherit;
+      font-size: 17px;
+    }
+    .gate-form input:focus {
+      outline: 3px solid rgba(0, 174, 94, .22);
+      border-color: #00a85a;
+    }
+    .gate-submit {
+      min-height: 52px;
+      border: 0;
+      border-radius: 13px;
+      background: #003fcb;
+      color: #fff;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .gate-submit:hover { background: #0034a8; }
+    .gate-error {
+      min-height: 20px;
+      margin: 0;
+      color: #b42318;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .gate-note {
+      margin: 14px 0 0 !important;
+      color: #6c7888 !important;
+      font-size: 12px;
+    }
+  </style>
 </head>
-<body>
-    <main>
-        <h1>Alexander Grinman Rivera</h1>
+<body class="gate-locked">
+  <div class="static-gate" id="static-gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <section class="gate-card">
+      <img class="gate-logo" src="assets/suzano-logo.png" alt="Suzano">
+      <h1 id="gate-title">MillSight</h1>
+      <p>Internal project materials for the Pine Bluff final intern presentation.</p>
+      <form class="gate-form" id="gate-form">
+        <label for="gate-password">Password</label>
+        <input id="gate-password" name="password" type="password" autocomplete="current-password" required autofocus>
+        <button class="gate-submit" type="submit">View materials</button>
+        <p class="gate-error" id="gate-error" role="alert" aria-live="polite"></p>
+      </form>
+      <p class="gate-note">For authorized presentation viewers.</p>
+    </section>
+  </div>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-        <p>
-            Computational Engineering student at The University of Texas at
-            Austin working in robotics, simulation, process control, and
-            industrial automation.
-        </p>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top" aria-label="MillSight home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M5 19V8m7 11V4m7 15v-8M3 19h18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </span>
+        <span>MillSight</span>
+      </a>
+      <a class="header-cta" href="#demo">Watch demo</a>
+    </div>
+  </header>
 
-        <nav>
-            <a href="https://github.com/agrinmanriv0537">GitHub</a>
-            <a href="https://www.linkedin.com/">LinkedIn</a>
-        </nav>
-    </main>
+  <main id="main">
+    <section class="hero" id="top">
+      <img class="hero-ring" src="assets/brand-ring.png" alt="" aria-hidden="true">
+      <div class="hero-inner">
+        <div class="hero-copy reveal">
+          <div class="internal-label">Pine Bluff · Process Control</div>
+          <h1>MillSight</h1>
+          <p class="tagline"><strong>Ask the mill. See the evidence.</strong><br>A local AI interface connecting live PI data, recovered control logic, mill knowledge, and Python simulation.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#demo">Watch the 14-second demo <span aria-hidden="true">↓</span></a>
+            <a class="button button-secondary" href="#proof">See the proof</a>
+          </div>
+          <div class="hero-chips" aria-label="MillSight foundations">
+            <span class="hero-chip">LIVE PI</span>
+            <span class="hero-chip">CONTROL LOGIC</span>
+            <span class="hero-chip">PYTHON SIMULATOR</span>
+            <span class="hero-chip">LOCAL AI</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section demo-wrap" id="demo">
+      <div class="reveal">
+        <p class="section-kicker">Working product</p>
+        <h2>A real answer in 14 seconds.</h2>
+        <p class="section-intro">A new chat, a plain-language request, and the correct APACS loop sheet returned by the local Process Control LLM.</p>
+      </div>
+      <div class="demo-shell reveal">
+        <video controls playsinline preload="metadata" poster="assets/demo-poster.webp" aria-label="Fourteen-second MillSight demonstration">
+          <source src="assets/demo-short.mp4" type="video/mp4">
+          Your browser does not support embedded video. <a href="assets/demo-short.mp4">Download the demo instead.</a>
+        </video>
+      </div>
+      <p class="demo-caption"><span class="dot" aria-hidden="true"></span><span>The edit removes processing wait time but leaves the complete answer generation visible.</span></p>
+    </section>
+
+    <section class="section proof-section" id="proof">
+      <div class="reveal">
+        <p class="section-kicker">Built at mill scale</p>
+        <h2>Real coverage. One place to use it.</h2>
+        <p class="section-intro">MillSight joins live process evidence with structured legacy control logic instead of asking people to fight each system separately.</p>
+      </div>
+
+      <div class="metric-grid" aria-label="Project coverage metrics">
+        <article class="metric reveal"><strong>6,996</strong><span>structured logic canvases</span></article>
+        <article class="metric reveal"><strong>50,761</strong><span>searchable logic identifiers</span></article>
+        <article class="metric reveal"><strong>72,514</strong><span>PI points cataloged</span></article>
+      </div>
+
+      <article class="impact-card reveal">
+        <p class="impact-eyebrow">Time-saving opportunity</p>
+        <div class="impact-number">$1.95M</div>
+        <div class="impact-label">annual potential · 43,250 hours</div>
+        <p class="impact-formula">173 people × 1 hour per day × $45 per hour × 250 workdays</p>
+        <p class="impact-note">Illustrative estimate, not booked savings.</p>
+      </article>
+
+      <details class="context-disclosure reveal">
+        <summary>Why the project exists</summary>
+        <div class="context-body">
+          <p>APACS, Rockwell, PI, and documentation each hold part of the answer. MillSight reduces the time spent finding, translating, and reconciling that information.</p>
+          <img src="assets/legacy-systems.webp" alt="APACS, Rockwell, and PI interfaces shown together" loading="lazy">
+        </div>
+      </details>
+    </section>
+
+    <section class="capabilities-section" id="capabilities">
+      <div class="capabilities-head reveal">
+        <p class="section-kicker">Working examples</p>
+        <h2>One interface. Different questions.</h2>
+        <p class="section-intro">Swipe through real outputs. Tap any example to inspect the full response.</p>
+      </div>
+
+      <div class="evidence-scroller" aria-label="MillSight evidence gallery">
+        <article class="evidence-card">
+          <div class="evidence-media"><img src="assets/live-status-card.webp" alt="Close crop of the local AI confirming paper machine status with live PI evidence" loading="lazy"><div class="evidence-callout"><strong>Yes, the paper machine is running.</strong><span>Two independent live PI speed signals agree.</span></div></div>
+          <div class="evidence-copy"><span class="evidence-number">LIVE PI</span><h3>Check live status</h3><p>Answer a direct operating question with exact tags, timestamps, and data-quality context.</p><button class="view-button" data-image="assets/live-status.webp" data-title="Live status with exact PI evidence" data-caption="The response verifies two independent speed signals before answering.">View example</button></div>
+        </article>
+
+        <article class="evidence-card">
+          <div class="evidence-media"><img src="assets/pi-tag-search-card.webp" alt="Close crop of ranked PI tags for the 5B washer hood" loading="lazy"><div class="evidence-callout"><strong>Exact PI tags, ranked by relevance.</strong><span>The strongest matches appear first with plain-language descriptions.</span></div></div>
+          <div class="evidence-copy"><span class="evidence-number">TAG SEARCH</span><h3>Find the right PI tags</h3><p>Search by equipment or purpose, rank the best matches, and explain what each tag measures.</p><button class="view-button" data-image="assets/pi-tag-search.webp" data-title="Ranked PI-tag retrieval" data-caption="The assistant returns the strongest matches first and suggests useful follow-up questions.">View example</button></div>
+        </article>
+
+        <article class="evidence-card">
+          <div class="evidence-media"><img src="assets/apacs-loop-sheet-card.webp" alt="Close crop of a rendered APACS control sheet" loading="lazy"><div class="evidence-callout"><strong>Rendered directly from recovered APACS logic.</strong><span>Tap to inspect the full sheet and explanation.</span></div></div>
+          <div class="evidence-copy"><span class="evidence-number">LOOP SHEETS</span><h3>Retrieve and explain logic</h3><p>Render an APACS sheet, trace its conditions, and distinguish configured logic from field evidence.</p><button class="view-button" data-image="assets/apacs-loop-sheet.webp" data-title="Rendered APACS sheet and explanation" data-caption="The answer keeps configured interlock logic separate from claims about what actually operated.">View example</button></div>
+        </article>
+
+        <article class="evidence-card">
+          <div class="evidence-media"><img src="assets/simulator-card.webp" alt="Legible actual-versus-predicted simulator chart" loading="lazy"><div class="evidence-callout"><strong>Blue: actual. Orange: predicted.</strong><span>Deviations reveal where behavior no longer matches the model.</span></div></div>
+          <div class="evidence-copy"><span class="evidence-number">SIMULATOR</span><h3>Compare expected behavior</h3><p>Use Python models to compare actual and predicted behavior and surface meaningful deviations.</p><button class="view-button" data-image="assets/simulator.webp" data-title="Actual versus predicted behavior" data-caption="Blue shows observed behavior; orange shows the simulator prediction derived from recovered logic and relationships.">View example</button></div>
+        </article>
+
+        <article class="evidence-card">
+          <div class="evidence-media"><img src="assets/integrated-diagnosis-card.webp" alt="Close crop of an integrated diagnosis using PI history, control logic, and documentation" loading="lazy"><div class="evidence-callout"><strong>Strongest candidate: coordinated shutdown.</strong><span>PI score 0.95. Candidate evidence, not proof.</span></div></div>
+          <div class="evidence-copy"><span class="evidence-number">INVESTIGATE</span><h3>Investigate across sources</h3><p>Combine PI behavior, control logic, simulator signals, and documentation without overstating root cause.</p><button class="view-button" data-image="assets/integrated-diagnosis.webp" data-title="Cross-source mill investigation" data-caption="The response labels the strongest candidate and its evidence while explicitly avoiding an unsupported root-cause claim.">View example</button></div>
+        </article>
+
+        <article class="evidence-card">
+          <div class="evidence-media"><img src="assets/control-logic-card.webp" alt="Close crop of recovered control logic with connected expressions" loading="lazy"><div class="evidence-callout"><strong>Inputs → expressions → outputs.</strong><span>The relationships remain searchable and traceable.</span></div></div>
+          <div class="evidence-copy"><span class="evidence-number">CONTROL LOGIC</span><h3>Make legacy logic usable</h3><p>Turn recovered APACS and Rockwell programs into connected, searchable visual logic.</p><button class="view-button" data-image="assets/control-logic.webp" data-title="Recovered control-logic canvas" data-caption="Structured signals, expressions, and outputs preserve the relationships the local AI needs to trace.">View example</button></div>
+        </article>
+      </div>
+      <p class="swipe-hint">Swipe left for more examples →</p>
+    </section>
+
+    <section class="evidence-principle">
+      <div class="principle-inner reveal">
+        <p class="section-kicker">Under the hood</p>
+        <h2>Live evidence leads.</h2>
+        <p class="section-intro" style="color:rgba(255,255,255,.68)">The answer is stronger because each source has a defined job.</p>
+        <div class="evidence-stack">
+          <div class="evidence-step"><strong>PI says what is happening.</strong><span>Current values, history, transitions, and data quality.</span></div>
+          <div class="evidence-step"><strong>Logic says what is configured.</strong><span>APACS and Rockwell relationships, interlocks, reads, and writes.</span></div>
+          <div class="evidence-step"><strong>Python says what was expected.</strong><span>Correlated behavior, simulation, and actual-versus-predicted comparisons.</span></div>
+        </div>
+        <p class="boundary-note">MillSight supports investigation. Candidate findings remain labeled as candidates until field evidence confirms them.</p>
+      </div>
+    </section>
+
+    <section class="section" id="build">
+      <div class="reveal">
+        <p class="section-kicker">Development process</p>
+        <h2>From recovered logic to live intelligence.</h2>
+      </div>
+      <div class="build-layout">
+        <ol class="timeline reveal">
+          <li><strong>Recover</strong><span>Extract APACS and Rockwell program data from hard-to-use source formats.</span></li>
+          <li><strong>Structure and connect</strong><span>Link tags, blocks, rungs, sheets, equipment, and documentation in a mill knowledge vault.</span></li>
+          <li><strong>Model behavior</strong><span>Use Python formulas and correlated history to reproduce expected process behavior.</span></li>
+          <li><strong>Go live</strong><span>Use PI as primary runtime evidence while control logic and simulation add context.</span></li>
+        </ol>
+        <figure class="vault-card reveal">
+          <button data-image="assets/knowledge-vault.webp?v=2" data-title="Connected mill knowledge vault" data-caption="The vault links thousands of recovered logic canvases, identifiers, equipment relationships, and supporting documentation.">
+            <img src="assets/knowledge-vault.webp?v=2" alt="Centered Obsidian graph from the MillSight presentation cover" loading="lazy">
+          </button>
+          <figcaption class="vault-caption">Tap to explore the connected knowledge vault.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="prompts-section" id="prompts">
+      <div class="prompts-inner reveal">
+        <p class="section-kicker">Questions to try</p>
+        <h2>Useful at every level of the mill.</h2>
+        <p class="section-intro">Choose a role to see a practical starting question. Tap once to copy it.</p>
+
+        <div class="role-tabs" role="tablist" aria-label="Select a mill role">
+          <button class="role-tab" role="tab" aria-selected="true" data-role="Operators">Operators</button>
+          <button class="role-tab" role="tab" aria-selected="false" data-role="Technicians / E&I">E&amp;I</button>
+          <button class="role-tab" role="tab" aria-selected="false" data-role="Maintenance">Maintenance</button>
+          <button class="role-tab" role="tab" aria-selected="false" data-role="Process & control engineers">Process control</button>
+          <button class="role-tab" role="tab" aria-selected="false" data-role="Managers">Managers</button>
+          <button class="role-tab" role="tab" aria-selected="false" data-role="New team members">New team</button>
+        </div>
+
+        <div class="prompt-card" role="tabpanel">
+          <div class="prompt-role" id="prompt-role">Operators</div>
+          <div class="prompt-text" id="prompt-text">“What changed on this pump during the last two hours, and what should I watch next?”</div>
+          <button class="copy-button" id="copy-prompt">Copy question</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="materials">
+      <div class="reveal">
+        <p class="section-kicker">Take it with you</p>
+        <h2>Project materials.</h2>
+        <p class="section-intro">Open the presentation, revisit the executive story, or download the short demo.</p>
+      </div>
+      <div class="materials-grid">
+        <a class="download-card reveal" href="downloads/MillSight_Final_Intern_Presentation_Final.pptx" download><div><strong>Final intern presentation</strong><span>PowerPoint · 6.1 MB</span></div><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card reveal" href="downloads/MillSight_Executive_Presentation.html" download><div><strong>Executive presentation</strong><span>Standalone HTML · 3.9 MB</span></div><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a class="download-card reveal" href="assets/demo-short.mp4" download><div><strong>Short product demo</strong><span>MP4 · 14 seconds</span></div><span class="download-arrow" aria-hidden="true">↓</span></a>
+      </div>
+      <p class="internal-notice reveal"><strong>Internal project material.</strong> Screenshots contain mill-specific tag names, timestamps, and control-logic context. Keep this version on an authenticated company or mill-network site.</p>
+    </section>
+
+    <section class="section" id="about">
+      <div class="reveal">
+        <p class="section-kicker">Project details</p>
+        <h2>Built in Process Control.</h2>
+      </div>
+      <article class="about-card reveal">
+        <div class="about-main"><h3>Alexander Grinman Rivera</h3><div class="role">MillSight · Final intern project</div></div>
+        <dl class="about-details">
+          <div><dt>Location</dt><dd>Pine Bluff</dd></div>
+          <div><dt>Department</dt><dd>Process Control</dd></div>
+          <div><dt>Project period</dt><dd>May–July 2026</dd></div>
+          <div><dt>Leader</dt><dd>Zachary Herald Smith</dd></div>
+        </dl>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <img class="footer-logo" src="assets/suzano-logo.png" alt="Suzano">
+    <div>MillSight · Pine Bluff Process Control · Internal project material</div>
+  </footer>
+
+  <dialog id="viewer" aria-labelledby="viewer-title">
+    <div class="viewer-top"><strong id="viewer-title">Evidence</strong><div class="viewer-actions"><a class="viewer-open" id="viewer-open" href="#" target="_blank" rel="noopener">Full size</a><button class="viewer-close" type="button" aria-label="Close image">×</button></div></div>
+    <div class="viewer-body"><img id="viewer-image" src="" alt=""><p class="viewer-caption" id="viewer-caption"></p></div>
+  </dialog>
+
+  <script>
+    const gateForm = document.querySelector('#gate-form');
+    const gatePassword = document.querySelector('#gate-password');
+    const gateError = document.querySelector('#gate-error');
+    const expectedPasswordHash = '8c604cb4aa1af6293ee2ed2478b5eb9d64e251d5b622f6798d9a941f762f5b17';
+
+    function unlockSite() {
+      document.documentElement.classList.add('site-unlocked');
+      document.body.classList.remove('gate-locked');
+      try { sessionStorage.setItem('millsight-unlocked', '1'); } catch (_) {}
+    }
+
+    async function hashPassword(value) {
+      const data = new TextEncoder().encode(value);
+      const digest = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    try {
+      if (sessionStorage.getItem('millsight-unlocked') === '1') unlockSite();
+    } catch (_) {}
+
+    gateForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      gateError.textContent = '';
+      try {
+        if (await hashPassword(gatePassword.value) === expectedPasswordHash) {
+          unlockSite();
+          gatePassword.value = '';
+          document.querySelector('#main').focus({ preventScroll: true });
+        } else {
+          gateError.textContent = 'That password is not correct.';
+          gatePassword.select();
+        }
+      } catch (_) {
+        gateError.textContent = 'Open this page from its secure website address.';
+      }
+    });
+
+    const prompts = {
+      "Operators": "What changed on this pump during the last two hours, and what should I watch next?",
+      "Technicians / E&I": "Find the loop sheet, termination, interlock conditions, and related signals for this tag.",
+      "Maintenance": "What behaved differently before the trip, and which related equipment should we inspect?",
+      "Process & control engineers": "Plot PV, SP, and output. Compare actual with predicted behavior, then trace the relevant logic.",
+      "Managers": "Summarize what changed, what it affected, and what needs attention next.",
+      "New team members": "Explain how this process area works, what the major equipment does, and where to verify it."
+    };
+
+    const promptRole = document.querySelector('#prompt-role');
+    const promptText = document.querySelector('#prompt-text');
+    const copyButton = document.querySelector('#copy-prompt');
+    document.querySelectorAll('.role-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.role-tab').forEach((item) => item.setAttribute('aria-selected', String(item === tab)));
+        const role = tab.dataset.role;
+        promptRole.textContent = role;
+        promptText.textContent = `“${prompts[role]}”`;
+        copyButton.textContent = 'Copy question';
+        tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      });
+    });
+
+    async function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+      const field = document.createElement('textarea');
+      field.value = text;
+      field.style.position = 'fixed';
+      field.style.opacity = '0';
+      document.body.appendChild(field);
+      field.select();
+      document.execCommand('copy');
+      field.remove();
+    }
+    copyButton.addEventListener('click', async () => {
+      const role = promptRole.textContent;
+      await copyText(prompts[role]);
+      copyButton.textContent = 'Copied';
+      window.setTimeout(() => copyButton.textContent = 'Copy question', 1500);
+    });
+
+    const viewer = document.querySelector('#viewer');
+    const viewerImage = document.querySelector('#viewer-image');
+    const viewerTitle = document.querySelector('#viewer-title');
+    const viewerCaption = document.querySelector('#viewer-caption');
+    const viewerOpen = document.querySelector('#viewer-open');
+    function openViewer(trigger) {
+      viewerImage.src = trigger.dataset.image;
+      viewerImage.alt = trigger.dataset.title || 'MillSight evidence';
+      viewerTitle.textContent = trigger.dataset.title || 'MillSight evidence';
+      viewerCaption.textContent = trigger.dataset.caption || '';
+      viewerOpen.href = trigger.dataset.image;
+      if (typeof viewer.showModal === 'function') viewer.showModal();
+      else viewer.setAttribute('open', '');
+    }
+    document.querySelectorAll('[data-image]').forEach((trigger) => trigger.addEventListener('click', () => openViewer(trigger)));
+    document.querySelector('.viewer-close').addEventListener('click', () => viewer.close());
+    viewer.addEventListener('click', (event) => {
+      const rect = viewer.getBoundingClientRect();
+      if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) viewer.close();
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .08, rootMargin: '0px 0px -32px' });
+    document.querySelectorAll('.reveal').forEach((node) => observer.observe(node));
+  </script>
 </body>
 </html>
