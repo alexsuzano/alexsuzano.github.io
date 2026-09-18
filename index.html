@@ -1219,11 +1219,10 @@
       if (sessionStorage.getItem('millsight-unlocked') === '1') unlockSite();
     } catch (_) {}
 
-    gateForm.addEventListener('submit', async (event) => {
-      event.preventDefault();
+    async function tryPassword(value) {
       gateError.textContent = '';
       try {
-        if (await hashPassword(gatePassword.value) === expectedPasswordHash) {
+        if (await hashPassword(value) === expectedPasswordHash) {
           unlockSite();
           gatePassword.value = '';
           document.querySelector('#main').focus({ preventScroll: true });
@@ -1234,7 +1233,25 @@
       } catch (_) {
         gateError.textContent = 'Open this page from its secure website address.';
       }
+    }
+
+    gateForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      await tryPassword(gatePassword.value);
     });
+
+    async function unlockFromLink() {
+      const params = new URLSearchParams(window.location.hash.slice(1));
+      if (!params.has('password')) return;
+      const password = params.get('password');
+      params.delete('password');
+      const remainingHash = params.toString();
+      window.history.replaceState(null, '', window.location.pathname + window.location.search + (remainingHash ? '#' + remainingHash : ''));
+      await tryPassword(password);
+    }
+
+    void unlockFromLink();
+    window.addEventListener('hashchange', unlockFromLink);
 
     const prompts = {
       "Operators": "What changed on this pump during the last two hours, and what should I watch next?",
