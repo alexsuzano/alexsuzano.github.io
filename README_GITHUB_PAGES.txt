@@ -19,6 +19,10 @@ Basic GitHub Pages setup
 
 Visitor password: suzano
 
+Recruiter link: https://alexsuzano.github.io/#password=suzano
+The link checks the visitor password automatically and removes it from the
+address bar. Regular section links and manual password entry still work.
+
 Important security note
 -----------------------
 GitHub Pages is static hosting and is normally public. The included password screen
